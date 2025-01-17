@@ -1,6 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const url = require('url');
+const { buffer } = require('stream/consumers');
 const port = 2600;
 
 const server = http.createServer((req, res) => {
@@ -39,6 +40,28 @@ const server = http.createServer((req, res) => {
                 body = JSON.parse(Buffer.concat(body).toString())
                 let idx = products.findIndex(item => item.id === req.query.id)
                 products[idx] = body
+                fs.writeFileSync('./data/products.json', JSON.stringify(products))
+                res.writeHead(200, headers)
+                res.end(fs.readFileSync('./data/products.json'))
+            })
+        } else if (req.method === 'PATCH'){
+            req.query = url.parse(req.url, true).query
+            req.query.id = parseInt(req.query.id)
+
+            let body = []
+            products = JSON.parse(products)
+            req.on('data', (chunk) => {
+                body.push(chunk)
+            }).on('end', () => {
+                body = JSON.parse(Buffer.concat(body).toString())
+                let idx = products.findIndex(item => item.id === req.query.id)
+                for (let prop in products[idx]) {
+                    for (let bodyProp in body) {
+                        if (prop == bodyProp) {
+                            products[idx][prop] = body[bodyProp]
+                        }
+                    }
+                }
                 fs.writeFileSync('./data/products.json', JSON.stringify(products))
                 res.writeHead(200, headers)
                 res.end(fs.readFileSync('./data/products.json'))
