@@ -43,6 +43,15 @@ const server = http.createServer((req, res) => {
                 res.writeHead(200, headers)
                 res.end(fs.readFileSync('./data/products.json'))
             })
+        } else if (req.method === 'DELETE') {
+            req.query = url.parse(req.url, true).query
+            req.query.id = parseInt(req.query.id)
+            products = JSON.parse(products)
+            let idx = products.findIndex(item => item.id === req.query.id)
+            products.splice(idx, 1)
+            fs.writeFileSync('./data/products.json', JSON.stringify(products))
+            res.writeHead(200, headers)
+            res.end(fs.readFileSync('./data/products.json'))
         }
     }
 })
