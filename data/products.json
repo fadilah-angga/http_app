@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "nama": "Sepatu",
+        "harga": 200000
+    },
+    {
+        "id": 2,
+        "nama": "Jaket",
+        "harga": 500000
+    },
+    {
+        "id": 3,
+        "nama": "Topi Azriel",
+        "harga": 20000
+    }
+]
